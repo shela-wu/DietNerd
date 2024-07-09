@@ -1,0 +1,62 @@
+/* reference.css */
+
+/* Set background color to match the main page */
+body {
+    background-color: #f0f8ff;
+    font-family: 'Open Sans', sans-serif; /* Match the background color of the main page */
+}
+
+/* Additional styles for the reference page */
+h1 {
+    font-size: 2em;
+    margin-top: 20px;
+    color: #333;
+}
+
+#reference-content {
+    margin: 20px 0;
+    padding: 10px;
+    font-size: 1em;
+    color: #555;
+    line-height: 1.6;
+    text-align: left;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow-y: auto;
+    font: 'Open Sans';
+    max-height: 400px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button-container {
+    margin-left: 20px;
+}
+
+.button-container button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.button-container button:hover {
+    background-color: #0056b3;
+}
+
+.logo {
+    width: 300px;
+    height: auto;
+    margin: -100px auto;
+    display: block;
+}

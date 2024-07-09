@@ -1,0 +1,131 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e3f2fd; /* Light blue background */
+    position: relative; /* To position ownership text */
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+#ownership {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 14px;
+    color: #555;
+    text-align: left; /* Ensure text is left-aligned */
+}
+
+#ownership p {
+    margin: 0;
+    padding: 0;
+}
+
+#container {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px 20px;
+    margin: 20px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+    margin: 0 auto -70px; /* Center the logo horizontally and add margin-bottom */
+    display: block;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.2em;
+    color: #666;
+    margin: 20px auto;
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.team-member {
+    margin-bottom: 40px;
+}
+
+.team-member img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-member h3 {
+    font-size: 1.4em;
+    color: #007bff; /* Blue color */
+    margin-bottom: 5px;
+}
+
+.team-member p {
+    font-size: 1em;
+    color: #555;
+}
+
+.navigation {
+    margin-top: 20px;
+}
+
+.contact-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.contact-link:hover {
+    background-color: #0056b3; /* Darker blue color */
+}
+
+@media (max-width: 600px) {
+    #container {
+        padding: 20px;
+    }
+
+    p, h2 {
+        font-size: 1em;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .team-member img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .team-member h3 {
+        font-size: 1.2em;
+    }
+}
