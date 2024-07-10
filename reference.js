@@ -103,3 +103,4 @@ window.onload = () => {
     loadReferenceContent();
     setupRedirectButton();
 };
+

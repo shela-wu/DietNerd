@@ -5,6 +5,14 @@ DietNerd is an exploratory tool designed to enrich your conversations with a reg
 Please be aware that the insights provided by DietNerd may not fully take into consideration all potential medication interactions or pre-existing conditions.
 To find a local expert near you, use this website: https://www.eatright.org/find-a-nutrition-expert
 `
+
+/**
+ * Asynchronously checks if a given user query is valid.
+ *
+ * @param {string} userQuery - The user query to be checked.
+ * @return {Promise<Object>} A Promise that resolves to the response object.
+ * @throws {Error} If the network response is not ok.
+ */
 async function check_valid(userQuery) {
     console.log("Checking valid");
     try {
@@ -19,7 +27,14 @@ async function check_valid(userQuery) {
         console.error('Error in query_generation:', error);
     }
 }
-// Query Generation endpoint
+
+/**
+ * Asynchronously generates a query based on the provided user query.
+ *
+ * @param {string} userQuery - The user query to generate a query from.
+ * @return {Promise<Object>} A Promise that resolves to the generated query object.
+ * @throws {Error} If the network response is not ok.
+ */
 async function queryGeneration(userQuery) {
     try {
         const response = await fetch(`${baseURL}/query_generation/${userQuery}`);
@@ -34,7 +49,13 @@ async function queryGeneration(userQuery) {
     }
 }
 
-// Collect Articles endpoint
+/**
+ * Asynchronously collects articles based on the provided query list.
+ *
+ * @param {Array} queryList - The list of queries to collect articles for.
+ * @return {Promise<Object>} A Promise that resolves to the result object containing the collected articles.
+ * @throws {Error} If the network response is not ok.
+ */
 async function collectArticles(queryList) {
     try {
         const response = await fetch(`${baseURL}/collect_articles/`, {
@@ -55,7 +76,13 @@ async function collectArticles(queryList) {
     }
 }
 
-// Article Matching endpoint
+/**
+ * Asynchronously sends a POST request to the article_matching endpoint with the provided deduplicated articles.
+ *
+ * @param {Array} deduplicatedArticlesCollected - The list of deduplicated articles to send in the request.
+ * @return {Promise<Object>} A Promise that resolves to the result object returned by the server.
+ * @throws {Error} If the network response is not ok.
+ */
 async function articleMatching(deduplicatedArticlesCollected) {
     try {
         const response = await fetch(`${baseURL}/article_matching/`, {
@@ -76,6 +103,14 @@ async function articleMatching(deduplicatedArticlesCollected) {
     }
 }
 
+/**
+ * Asynchronously sends a POST request to the get_all_articles endpoint with the provided relevant article summaries and matched articles.
+ *
+ * @param {Array} relevant_article_summaries - The list of relevant article summaries to send in the request.
+ * @param {Array} matched_articles - The list of matched articles to send in the request.
+ * @return {Promise<Object>} A Promise that resolves to the result object returned by the server.
+ * @throws {Error} If the network response is not ok.
+ */
 async function getAllArticles(relevant_article_summaries, matched_articles) {
     try {
         const response = await fetch(`${baseURL}/get_all_articles/`, {
@@ -99,7 +134,14 @@ async function getAllArticles(relevant_article_summaries, matched_articles) {
     }
 }
 
-// Reliability Analysis Processing endpoint
+/**
+ * Asynchronously performs reliability analysis processing on a list of articles.
+ *
+ * @param {Array} articlesToProcess - The list of articles to process.
+ * @param {string} user_query - The user query for the analysis.
+ * @return {Promise<Object>} A Promise that resolves to the result object containing the processed articles.
+ * @throws {Error} If the network response is not ok.
+ */
 async function reliabilityAnalysisProcessing(articlesToProcess, user_query) {
     try {
         const response = await fetch(`${baseURL}/reliability_analysis_processing/`, {
@@ -125,7 +167,12 @@ async function reliabilityAnalysisProcessing(articlesToProcess, user_query) {
     }
 }
 
-// Write Articles to DB endpoint
+/**
+ * Asynchronously writes the relevant article summaries to the database.
+ *
+ * @param {Array} relevantArticleSummaries - The list of relevant article summaries to be written to the database.
+ * @return {Promise<Object>} A Promise that resolves to the result object returned by the server.
+ */  
 async function writeArticlesToDb(relevantArticleSummaries) {
     try {
         const response = await fetch(`${baseURL}/write_articles_to_db/`, {
@@ -146,6 +193,13 @@ async function writeArticlesToDb(relevantArticleSummaries) {
     }
 }
 
+/**
+ * Asynchronously generates the final response based on all relevant articles and user query input.
+ *
+ * @param {Array} allRelevantArticles - The list of relevant articles to generate the response.
+ * @param {string} user_query - The user query input for generating the response.
+ * @return {Promise<Object>} A Promise that resolves to the final response generated.
+ */
 async function generateFinalResponse(allRelevantArticles, user_query) {
     try {
         const response = await fetch(`${baseURL}/generate_final_response/`, {
@@ -171,6 +225,13 @@ async function generateFinalResponse(allRelevantArticles, user_query) {
     }
 }
 
+/**
+ * Retrieves an answer from the server based on the provided question.
+ *
+ * @param {string} question - The question to be asked.
+ * @return {Promise<string>} The answer to the question.
+ * @throws {Error} If the network response is not ok.
+ */
 const getAnswer = async (question) => {
     try {
         const queryUrl = `${baseURL}/db_get/${encodeURIComponent(question)}`;
@@ -201,7 +262,13 @@ const getAnswer = async (question) => {
     }
 };
 
-// Function to generate an answer if not found in the database
+/**
+ * Generates an answer based on the given question.
+ *
+ * @param {string} question - The question to generate an answer for.
+ * @return {Promise<Object>} A Promise that resolves to the generated answer.
+ * @throws {Error} If the network response is not ok.
+ */
 const generate = async (question) => {
     try {
         const queryUrl = `${baseURL}/generate/${encodeURIComponent(question)}`;
@@ -219,6 +286,13 @@ const generate = async (question) => {
     }
 };
 
+/**
+ * Retrieves a similarity search result from the server based on the provided question.
+ *
+ * @param {string} question - The question to be searched.
+ * @return {Promise<Object>} A promise that resolves to the similarity search result object.
+ * @throws {Error} If the network response is not ok.
+ */
 const get_sim = async (question) => {
     console.log("Getting Sim")
     try {
@@ -239,6 +313,12 @@ const get_sim = async (question) => {
     }
 };
 
+/**
+ * Split the citation into its components using regex
+ *
+ * @param {string} citation - The citation to be parsed
+ * @return {Array} An array containing the authors, title, and journal of the citation
+ */
 function parseCitation(citation) {
     // Split the citation into its components using regex
     citation = citation.slice(1);
@@ -257,7 +337,13 @@ const getFullOutput = () => {
 }
 
 
-// Function to format references as clickable links
+
+/**
+ * Formats references in the given output as clickable links.
+ *
+ * @param {string} output - The output containing references.
+ * @return {string} The formatted references as a string.
+ */
 const formatReferences = (output) => {
     console.log("Formatting References");
     const citationString = localStorage.getItem('citations')
@@ -319,6 +405,15 @@ const formatReferences = (output) => {
 };
 
 
+/**
+ * Formats the input text by replacing newline characters with `<br>`,
+ * double asterisks with `<strong>`, triple hashes with `<strong>`,
+ * and hyphens or asterisks with `<li>`.
+ *
+ * @param {string} input - The input text to be formatted.
+ * @param {string} disclaimer - The disclaimer to be appended to the formatted text.
+ * @return {string} The formatted text.
+ */
 const formatText = (input,disclaimer) => {
     // Replace \n with <br>
     let formattedText = input.replace(/\n/g, '<br>');
@@ -331,6 +426,9 @@ const formatText = (input,disclaimer) => {
     return formattedText;
 }
 
+/**
+ * Generates a PDF document based on the formatted text content.
+ */
 const generatePDF = () => {
     const script = document.createElement('script');
     const text = localStorage.getItem("rawOutput");
@@ -422,6 +520,12 @@ const generatePDF = () => {
     };
 };
 
+/**
+ * Runs the generation process for the given user query.
+ *
+ * @param {string} userQuery - The user query to generate the search phrases for.
+ * @return {Promise<void>} - A promise that resolves when the generation process is complete.
+ */
 async function runGeneration(userQuery) {
     const answerElement = document.getElementById('output');
     console.log("Running Generation");
@@ -457,7 +561,11 @@ async function runGeneration(userQuery) {
 }
 
 
-// Event listener for the submit button
+/**
+ * Handles the click event of the submit button.
+ * 
+ * @returns {Promise<void>} A Promise that resolves when the function completes.
+ */
 document.getElementById('submit').addEventListener('click', async (event) => {
     const question = document.getElementById('question').value.trim();
     const answerElement = document.getElementById('output');
@@ -559,5 +667,7 @@ document.getElementById('question').addEventListener('keydown', (event) => {
         document.getElementById('submit').click();
     }
 });
+
+
 
 
