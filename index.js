@@ -247,12 +247,14 @@ const getAnswer = async (question) => {
         output = output.replace(/(^|\n)(\d+)\.\s/g, '\n\n$2. ');
 
         const citations_obj = JSON.parse(result[0][1]).citations_obj;
+        const allArticles = JSON.parse(result[0][1]).relevent_articles
         let citations = JSON.parse(result[0][1])
         citations = JSON.stringify(citations.citations)
         console.log(citations_obj)
         // Assuming the result has the reference information you need
         localStorage.setItem('referenceObject', JSON.stringify(citations_obj));
         localStorage.setItem('citations', citations);
+        localStorage.setItem('allArticles', JSON.stringify(allArticles));
 
 
         return output;
@@ -332,12 +334,6 @@ function parseCitation(citation) {
 
 
 
-const getFullOutput = () => {
-    //TO DO
-}
-
-
-
 /**
  * Formats references in the given output as clickable links.
  *
@@ -345,63 +341,104 @@ const getFullOutput = () => {
  * @return {string} The formatted references as a string.
  */
 const formatReferences = (output) => {
-    console.log("Formatting References");
-    const citationString = localStorage.getItem('citations')
-    const citationObj = JSON.parse(localStorage.getItem('referenceObject'))
-    const citations = JSON.parse(citationString)
-    const referenceRegex = /(\[\d+\]|\d+\.)/g;
-    const reference_split = output.split("References:")[1];
-    const references = reference_split.match(referenceRegex);
-    if (!references) {
-        return 'No references available.';
+    const citations = JSON.parse(localStorage.getItem('citations'));
+    const citationObj = JSON.parse(localStorage.getItem('referenceObject'));
+    const references = extractReferences(output);
+  
+    console.log("REFERENCES", references);
+    if (references.length === 0) {
+      return 'No references available.';
     }
-
-
-    // Create a list of clickable references
-    const uniqueReferences = [...new Set(references)];
-    console.log("Unique Ref : " + uniqueReferences)
-    const referenceList = uniqueReferences.map(ref => {
-        const refNumber = ref.match(/\d+/)[0];
-        const citation = citations.find(citation =>  
-            citation.startsWith(`[${refNumber}]`) || citation.startsWith(`${refNumber}.`)
-        );
-        console.log(citations);
-        console.log("Citation:" + citation + " : " + refNumber)
-        if (citation == undefined) {
-            console.log("Undefined citation, skipping");
-            return;
-        };
-        console.log(citationObj)
-        if (citationObj[citation] == undefined) {
-            return;
-        }
-        const PMCID = citationObj[citation]["PMCID"];
-        let fullText;
-        if (PMCID == 'None') {
-            fullText = false;
-        } else {
-            fullText = true;
-        }
-
-        const iconStyle = 'width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;'; // Adjust size as needed
+  
+    const seenReferences = new Set();
+    const referenceList = references
+      .map((ref) => {
+        // Normalize the reference number
+        const normalizedRef = normalizeReference(ref);
         
-        let analysisText;
-        if (fullText) {
-            analysisText = `<span style="color: black; font-weight: bold; border: 1px solid green; padding: 2px 4px; background-color: rgba(0, 128, 0, 0.1); display: inline-flex; align-items: center;"><img src="assets/full_text.png" alt="Full Text" style="${iconStyle}"><img src="assets/full_text.png" alt="Full Text" style="${iconStyle}">Full Text Analysis</span>`;
-        } else {
-            analysisText = `<span style="color: black; font-weight: bold; border: 1px solid yellow; padding: 2px 4px; background-color: rgba(255, 255, 0, 0.2); display: inline-flex; align-items: center;"><img src="assets/abstract.png" alt="Abstract Only" style="${iconStyle}">Abstract Only Analysis</span>`;
+        // Skip if we've already seen this normalized reference
+        if (seenReferences.has(normalizedRef)) {
+          return null;
         }
-
-        const citationInfo = parseCitation(citation);
-        const authors = citationInfo[0];
-        const title = citationInfo[1];
-        const journal = citationInfo[2];
-
-        citationToDisplay = `<strong>[${refNumber}] ${title}</br>${authors}<br>${journal}</strong>`;
-        return `<a href="reference.html?ref=${refNumber}" target="_blank">${citationToDisplay}</a> - ${analysisText}`;
-    }).filter(Boolean).join('<br><br>');
-
+        seenReferences.add(normalizedRef);
+  
+        const citation = findCitation(ref, citations);
+        if (!citation) {
+          return null;
+        }
+      
+        console.log(citationObj);
+        console.log(citation);
+        const pmcid = citationObj[citation]["PMCID"];
+        const fullText = pmcid !== 'None';
+        const analysisText = getAnalysisText(fullText);
+  
+        const [authors, title, journal] = parseCitation(citation);
+        const citationToDisplay = `<strong>${ref} ${title}</br>${authors}<br>${journal}</strong>`;
+  
+        return `<a href="reference.html?ref=${ref}" target="_blank">${citationToDisplay}</a> - ${analysisText}`;
+      })
+      .filter(Boolean)
+      .join('<br><br>');
+  
     return `<b>References:</b><br><br> ${referenceList}`;
+  };
+  
+  // Function to normalize reference numbers
+  const normalizeReference = (ref) => {
+    // Remove any non-digit characters and convert to a number
+    return parseInt(ref.replace(/\D/g, ''), 10);
+  };
+
+/**
+ * Extracts references from the given output.
+ *
+ * @param {string} output - The output containing references.
+ * @return {Array} An array of references.
+ */
+const extractReferences = (output) => {
+    // Split the output at "References:" and take the second part
+    const referencePart = output.split("References:")[1];
+    
+    if (!referencePart) return [];
+  
+    // Use a regex that matches both [n] and n. formats
+    const referenceRegex = /(\[\d+\]|\d+\.)/g;
+    
+    // Find all matches
+    const matches = referencePart.match(referenceRegex) || [];
+    
+    // Normalize and deduplicate the matches
+    const uniqueReferences = [...new Set(matches.map(normalizeReference))];
+    
+    // Convert back to original format, preferring [n] over n.
+    return uniqueReferences.map(num => matches.find(ref => normalizeReference(ref) === num) || `[${num}]`);
+  };
+
+/**
+ * Finds the citation corresponding to the given reference.
+ *
+ * @param {string} ref - The reference.
+ * @param {Array} citations - The array of citations.
+ * @return {string|undefined} The citation corresponding to the reference, or undefined if not found.
+ */
+const findCitation = (ref, citations) => {
+  const refNumber = ref.match(/\d+/)[0];
+  return citations.find((citation) => citation.startsWith(`[${refNumber}]`) || citation.startsWith(`${refNumber}.`));
+};
+
+
+/**
+ * Returns the analysis text based on whether the citation has full text or not.
+ *
+ * @param {boolean} fullText - Indicates whether the citation has full text.
+ * @return {string} The analysis text.
+ */
+const getAnalysisText = (fullText) => {
+  const iconStyle = 'width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;';
+  const analysisText = fullText ? 'Full Text Analysis' : 'Abstract Only Analysis';
+  const imageUrl = fullText ? 'assets/full_text.png' : 'assets/abstract.png';
+  return `<span style="color: black; font-weight: bold; border: 1px solid ${fullText ? 'green' : 'yellow'}; padding: 2px 4px; background-color: rgba(${fullText ? '0, 128, 0' : '255, 255, 0'}, 0.1); display: inline-flex; align-items: center;"><img src="${imageUrl}" alt="${analysisText}" style="${iconStyle}"><img src="${imageUrl}" alt="${analysisText}" style="${iconStyle}">${analysisText}</span>`;
 };
 
 
@@ -430,8 +467,10 @@ const formatText = (input,disclaimer) => {
  * Generates a PDF document based on the formatted text content.
  */
 const generatePDF = () => {
+    const question = document.getElementById('question').value.trim();
     const script = document.createElement('script');
     const text = localStorage.getItem("rawOutput");
+    const citationObj = JSON.parse(localStorage.getItem('referenceObject'));
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
     document.body.appendChild(script);
 
@@ -441,85 +480,120 @@ const generatePDF = () => {
 
         const lineHeight = 7;
         let y = 20;
-        let listItemIndent = 10;
+        const listItemIndent = 10;
         const maxWidth = 180;
         const pageHeight = doc.internal.pageSize.height;
 
-        // Format the text
-        let formattedText = text;
-        formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '**$1**');
-        formattedText = formattedText.replace(/### (.*?)(\n|$)/g, '**$1**$2');
-        formattedText = formattedText.replace(/^[-*] /gm, '• ');
+        // Function to add formatted text with word wrap
+        const addFormattedText = (text, startX, fontSize = 12) => {
+            let x = startX;
+            const lines = text.split('\n');
 
-        const lines = formattedText.split('\n');
-
-        lines.forEach(line => {
-            let x = 15;
-            const isListItem = line.startsWith('• ');
-            if (isListItem) {
-                x += listItemIndent;
-                line = line.substring(2);
-            }
-
-            const parts = line.split(/(\*\*.*?\*\*)/);
-
-            parts.forEach(part => {
-                if (part.startsWith('**') && part.endsWith('**')) {
-                    doc.setFont("helvetica", "bold");
-                    part = part.slice(2, -2);
-                } else {
+            lines.forEach(line => {
+                x = startX;
+                const isListItem = line.trim().startsWith('-');
+                if (isListItem) {
+                    x += listItemIndent;
+                    line = line.substring(line.indexOf('-') + 1).trim();
                     doc.setFont("helvetica", "normal");
+                    doc.setFontSize(fontSize);
+                    doc.text('•', startX, y);
                 }
 
-                doc.setFontSize(12);
-                const words = part.split(' ');
-                let currentLine = '';
+                const parts = line.split(/(\*\*.*?\*\*)/);
 
-                words.forEach(word => {
-                    const testLine = currentLine + (currentLine ? ' ' : '') + word;
-                    const testWidth = doc.getTextWidth(testLine);
+                parts.forEach(part => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                        doc.setFont("helvetica", "bold");
+                        part = part.slice(2, -2);
+                    } else {
+                        doc.setFont("helvetica", "normal");
+                    }
 
-                    if (testWidth > maxWidth - x + 15) {
+                    doc.setFontSize(fontSize);
+                    const words = part.split(' ');
+                    let currentLine = '';
+
+                    words.forEach(word => {
+                        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                        const testWidth = doc.getTextWidth(testLine);
+
+                        if (testWidth > maxWidth - x + 15) {
+                            if (y > pageHeight - 20) {
+                                doc.addPage();
+                                y = 20;
+                            }
+                            doc.text(currentLine, x, y);
+                            y += lineHeight;
+                            currentLine = word;
+                            x = isListItem ? startX + listItemIndent : startX;
+                        } else {
+                            currentLine = testLine;
+                        }
+                    });
+
+                    if (currentLine) {
                         if (y > pageHeight - 20) {
                             doc.addPage();
                             y = 20;
                         }
-                        if (isListItem && currentLine === '') {
-                            doc.text('•', 15, y);
-                        }
                         doc.text(currentLine, x, y);
-                        y += lineHeight;
-                        currentLine = word;
-                        x = isListItem ? 15 + listItemIndent : 15;
-                    } else {
-                        currentLine = testLine;
+                        x += doc.getTextWidth(currentLine) + 1;
                     }
                 });
 
-                if (currentLine) {
-                    if (y > pageHeight - 20) {
-                        doc.addPage();
-                        y = 20;
-                    }
-                    if (isListItem && x === 15 + listItemIndent) {
-                        doc.text('•', 15, y);
-                    }
-                    doc.text(currentLine, x, y);
-                    x += doc.getTextWidth(currentLine) + 1;
+                y += lineHeight;
+                if (y > pageHeight - 20) {
+                    doc.addPage();
+                    y = 20;
                 }
             });
+        };
 
-            y += lineHeight;
-            if (y > pageHeight - 20) {
+        // Add the question as a title
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        const titleLines = doc.splitTextToSize(question, maxWidth);
+        titleLines.forEach(line => {
+            doc.text(line, 15, y);
+            y += 10;
+        });
+        y += 10;
+
+        // Add the main content
+        addFormattedText(text, 15);
+
+        // Add citation summaries
+        doc.addPage();
+        y = 20;
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text("Citation Summaries", 15, y);
+        y += 20;
+
+        Object.entries(citationObj).forEach(([citation, data], index) => {
+            if (index > 0) {  
                 doc.addPage();
                 y = 20;
             }
+
+            addFormattedText(`**Citation:** ${citation}`, 15, 14);
+            y += lineHeight;
+            addFormattedText(`**Summary:**`, 15, 14);
+            y += lineHeight;
+            addFormattedText(data.Summary, 15);
+            y += lineHeight; 
+            addFormattedText(`**PMID:** ${data.PMID}`, 15);
+            y += lineHeight;
+            addFormattedText(`**PMCID:** ${data.PMCID}`, 15);
+            y += lineHeight;
+            addFormattedText(`**URL:** ${data.URL}`, 15);
+            y += lineHeight * 2;
         });
 
         doc.save("Output.pdf");
     };
 };
-
 /**
  * Runs the generation process for the given user query.
  *
@@ -626,8 +700,6 @@ document.getElementById('submit').addEventListener('click', async (event) => {
                     hintElement.textContent = ''
                     answerElement.innerHTML = `<textarea readonly placeholder="Answer will load here, please wait. This may take a minute. Please do not close or refresh this page...."></textarea>`;
                     referencesElement.innerHTML = `<label for="references" class="visually-hidden">References will appear here...</label><textarea id="references" readonly placeholder="References will appear here..."></textarea>`;
-                    // const generatedAnswer = await generate(question);
-                    // console.log("Got answer" + generatedAnswer)
                     const checkValid = await check_valid(question);
                     const checkValidResponse = checkValid["response"];
                     console.log("Check valid response: " + checkValidResponse);
@@ -667,7 +739,3 @@ document.getElementById('question').addEventListener('keydown', (event) => {
         document.getElementById('submit').click();
     }
 });
-
-
-
-

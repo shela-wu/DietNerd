@@ -47,7 +47,7 @@ function loadReferenceContent() {
             let citation_num = extractCitationNumber(citation);
             console.log(citation_num)
             console.log(refNumber)
-            if (citation_num == refNumber) {
+            if (`[${citation_num}]` == refNumber || citation_num == refNumber) {
                 console.log('Found Match')
                 console.log(citation)
                 const info = parseCitation(citation)
