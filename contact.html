@@ -6,8 +6,26 @@
     <title>Contact Us - DietNerd</title>
     <link rel="stylesheet" type="text/css" href="contact.css">
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel="stylesheet">
+    <style>
+        .toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .toolbar a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <div class="toolbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
     <div id="ownership">
         <p>Professor Dennis Shasha @ New York University</p>
         <p>Shela Wu @ New York University</p>
@@ -46,11 +64,6 @@
         })();
     </script>
     <script type="text/javascript">
-        // Initializes an event listener on the 'contactForm' element that listens for the 'submit' event.
-        // When the form is submitted, it prevents the default form submission behavior and sends the form data
-        // to the specified email service using the emailjs library.
-        // If the email is successfully sent, an alert is displayed with a thank you message, the form is reset,
-        // and a success message is logged to the console. If there is an error, the error is logged to the console.
         window.onload = function() {
             document.getElementById('contactForm').addEventListener('submit', function(event) {
                 event.preventDefault();

@@ -8,6 +8,11 @@
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel="stylesheet">
 </head>
 <body>
+    <div class="toolbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
     <div id="ownership">
         <p>Professor Dennis Shasha @ New York University</p>
         <p>Shela Wu @ New York University</p>
@@ -17,11 +22,17 @@
         <img src="assets/dietnerd_logo.png" alt="DietNerd Logo" class="logo">
         
         <h2>We answer your diet and nutrition questions based on the strongest scientific evidence</h2>
-        <p class="disclaimer"><strong>Disclaimer:</strong> DietNerd is an exploratory tool designed to enrich your conversations with a registered dietitian or registered dietitian nutritionist, who can then review your profile before providing recommendations. Please be aware that the insights provided by DietNerd may not fully take into consideration all potential medication interactions or pre-existing conditions. Find a local expert near you: https://www.eatright.org/find-a-nutrition-expert</p>
+        <p class="disclaimer"><strong>Disclaimer:</strong> DietNerd is an exploratory tool designed to enrich your conversations with a registered dietitian or registered dietitian nutritionist, who can then review your profile before providing recommendations. Please be aware that the insights provided by DietNerd may not fully take into consideration all potential medication interactions or pre-existing conditions. Find a local expert near you: https://www.eatright.org/find-a-nutrition-expert</p>
         <div class="input-container">
             <label for="question" class="visually-hidden">Enter your diet-based question</label>
             <input type="text" id="question" placeholder="Enter your question here...">
             <button id="submit">Submit</button>
+        </div>
+        <div class id="example-questions">
+            <h3>Example Questions:</h3>
+            <div class="example-question">What diet is recommended for PCOS?</div>
+            <div class="example-question">What are the pros and cons of vitamin b12?</div>
+            <div class="example-question">Does adherence to the Mediterranean dietary pattern reduce asthma symptoms in children?</div>
         </div>
         <p class="hint"></p>
         <div id="results" class="hidden">
@@ -34,7 +45,7 @@
             </div>
         </div>
         <div class="button-container">
-            <button id="generate-pdf-button" class="hidden">Generate PDF</button>
+            <button id="generate-pdf-button" class="hidden">Download PDF</button>
         </div>
         <div class="similar-questions" id="similarQuestions"></div> <!-- Container for similar questions buttons -->
     </div>

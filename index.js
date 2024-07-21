@@ -344,45 +344,51 @@ const formatReferences = (output) => {
     const citations = JSON.parse(localStorage.getItem('citations'));
     const citationObj = JSON.parse(localStorage.getItem('referenceObject'));
     const references = extractReferences(output);
-  
+
     console.log("REFERENCES", references);
     if (references.length === 0) {
-      return 'No references available.';
+        return 'No references available.';
     }
-  
+
     const seenReferences = new Set();
     const referenceList = references
-      .map((ref) => {
-        // Normalize the reference number
-        const normalizedRef = normalizeReference(ref);
-        
-        // Skip if we've already seen this normalized reference
-        if (seenReferences.has(normalizedRef)) {
-          return null;
-        }
-        seenReferences.add(normalizedRef);
-  
-        const citation = findCitation(ref, citations);
-        if (!citation) {
-          return null;
-        }
-      
-        console.log(citationObj);
-        console.log(citation);
-        const pmcid = citationObj[citation]["PMCID"];
-        const fullText = pmcid !== 'None';
-        const analysisText = getAnalysisText(fullText);
-  
-        const [authors, title, journal] = parseCitation(citation);
-        const citationToDisplay = `<strong>${ref} ${title}</br>${authors}<br>${journal}</strong>`;
-  
-        return `<a href="reference.html?ref=${ref}" target="_blank">${citationToDisplay}</a> - ${analysisText}`;
-      })
-      .filter(Boolean)
-      .join('<br><br>');
-  
+        .map((ref) => {
+            // Normalize the reference number
+            const normalizedRef = normalizeReference(ref);
+
+            // Skip if we've already seen this normalized reference
+            if (seenReferences.has(normalizedRef)) {
+                return null;
+            }
+            seenReferences.add(normalizedRef);
+
+            const citation = findCitation(ref, citations);
+            if (!citation) {
+                return null;
+            }
+
+            console.log(citationObj);
+            console.log(citation);
+
+            // Check if citationObj[citation] exists before accessing it
+            if (!citationObj[citation]) {
+                return null;
+            }
+
+            const pmcid = citationObj[citation]["PMCID"];
+            const fullText = pmcid !== 'None';
+            const analysisText = getAnalysisText(fullText);
+
+            const [authors, title, journal] = parseCitation(citation);
+            const citationToDisplay = `<strong>${ref} ${title}</br>${authors}<br>${journal}</strong>`;
+
+            return `<a href="reference.html?ref=${ref}" target="_blank">${citationToDisplay}</a> - ${analysisText}`;
+        })
+        .filter(Boolean)
+        .join('<br><br>');
+
     return `<b>References:</b><br><br> ${referenceList}`;
-  };
+};
   
   // Function to normalize reference numbers
   const normalizeReference = (ref) => {
@@ -591,7 +597,7 @@ const generatePDF = () => {
             y += lineHeight * 2;
         });
 
-        doc.save("Output.pdf");
+        doc.save("Dietnerd.pdf"); //ADD DATE AND TIME
     };
 };
 /**
@@ -648,6 +654,7 @@ document.getElementById('submit').addEventListener('click', async (event) => {
     const similarQuestionsContainer = document.getElementById('similarQuestions');
     const hintElement = document.querySelector('.hint')
     const generatePdfButton = document.getElementById('generate-pdf-button');
+    const exampleQuestions = document.getElementById('example-questions');
 
     generatePdfButton.classList.add("hidden");
 
@@ -668,13 +675,15 @@ document.getElementById('submit').addEventListener('click', async (event) => {
             referencesElement.innerHTML = formattedReferences;
             hintElement.textContent = '';
             generatePdfButton.classList.remove("hidden");
+            exampleQuestions.classList.add('hidden');
         } catch (error) {
             console.log(error)
             console.log('Not in database, retrieving similiar queries...');
             hintElement.textContent = `Generating your answer may take up to 2 minutes. For an instant response, choose from the similar questions below.. If you'd prefer to proceed with generating your answer, click "Generate My Original Question"`
             similarQuestionsContainer.style.display = 'flex'
             const similar_q = await get_sim(question);
-            similarQuestionsContainer.innerHTML = ''
+            similarQuestionsContainer.innerHTML = '';
+            exampleQuestions.classList.add('hidden');
             similar_q.forEach((similarQuestion, index) => {
                 const button = document.createElement('button');
                 button.textContent = similarQuestion[1];
@@ -738,4 +747,17 @@ document.getElementById('question').addEventListener('keydown', (event) => {
         event.preventDefault(); // Prevent the default form submission behavior
         document.getElementById('submit').click();
     }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const questionInput = document.getElementById('question');
+    const submitButton = document.getElementById('submit');
+    const exampleQuestions = document.querySelectorAll('.example-question');
+
+    exampleQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            questionInput.value = this.textContent;
+            submitButton.click();
+        });
+    });
 });
