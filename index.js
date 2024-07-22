@@ -29,203 +29,6 @@ async function check_valid(userQuery) {
 }
 
 /**
- * Asynchronously generates a query based on the provided user query.
- *
- * @param {string} userQuery - The user query to generate a query from.
- * @return {Promise<Object>} A Promise that resolves to the generated query object.
- * @throws {Error} If the network response is not ok.
- */
-async function queryGeneration(userQuery) {
-    try {
-        const response = await fetch(`${baseURL}/query_generation/${userQuery}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Query Generation Response:', result);
-        return result;
-    } catch (error) {
-        console.error('Error in query_generation:', error);
-    }
-}
-
-/**
- * Asynchronously collects articles based on the provided query list.
- *
- * @param {Array} queryList - The list of queries to collect articles for.
- * @return {Promise<Object>} A Promise that resolves to the result object containing the collected articles.
- * @throws {Error} If the network response is not ok.
- */
-async function collectArticles(queryList) {
-    try {
-        const response = await fetch(`${baseURL}/collect_articles/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(queryList)
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Collect Articles Response:', result);
-        return result;
-    } catch (error) {
-        console.error('Error in collect_articles:', error);
-    }
-}
-
-/**
- * Asynchronously sends a POST request to the article_matching endpoint with the provided deduplicated articles.
- *
- * @param {Array} deduplicatedArticlesCollected - The list of deduplicated articles to send in the request.
- * @return {Promise<Object>} A Promise that resolves to the result object returned by the server.
- * @throws {Error} If the network response is not ok.
- */
-async function articleMatching(deduplicatedArticlesCollected) {
-    try {
-        const response = await fetch(`${baseURL}/article_matching/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(deduplicatedArticlesCollected)
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Article Matching Response:', result);
-        return result;
-    } catch (error) {
-        console.error('Error in article_matching:', error);
-    }
-}
-
-/**
- * Asynchronously sends a POST request to the get_all_articles endpoint with the provided relevant article summaries and matched articles.
- *
- * @param {Array} relevant_article_summaries - The list of relevant article summaries to send in the request.
- * @param {Array} matched_articles - The list of matched articles to send in the request.
- * @return {Promise<Object>} A Promise that resolves to the result object returned by the server.
- * @throws {Error} If the network response is not ok.
- */
-async function getAllArticles(relevant_article_summaries, matched_articles) {
-    try {
-        const response = await fetch(`${baseURL}/get_all_articles/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                relevant_article_summaries: relevant_article_summaries, 
-                matched_articles: matched_articles
-            })
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Get All Article Matching Response:', result);
-        return result;
-    } catch (error) {
-        console.error('Error in article_matching:', error);
-    }
-}
-
-/**
- * Asynchronously performs reliability analysis processing on a list of articles.
- *
- * @param {Array} articlesToProcess - The list of articles to process.
- * @param {string} user_query - The user query for the analysis.
- * @return {Promise<Object>} A Promise that resolves to the result object containing the processed articles.
- * @throws {Error} If the network response is not ok.
- */
-async function reliabilityAnalysisProcessing(articlesToProcess, user_query) {
-    try {
-        const response = await fetch(`${baseURL}/reliability_analysis_processing/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                articles_to_process: articlesToProcess,
-                user_query: user_query
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Reliability Analysis Processing Response:', result);
-        return result;
-    } catch (err) {
-        console.error('Fetch error:', err);
-        throw err;
-    }
-}
-
-/**
- * Asynchronously writes the relevant article summaries to the database.
- *
- * @param {Array} relevantArticleSummaries - The list of relevant article summaries to be written to the database.
- * @return {Promise<Object>} A Promise that resolves to the result object returned by the server.
- */  
-async function writeArticlesToDb(relevantArticleSummaries) {
-    try {
-        const response = await fetch(`${baseURL}/write_articles_to_db/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(relevantArticleSummaries)
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Write Articles to DB Response:', result);
-        return result;
-    } catch (error) {
-        console.error('Error in write_articles_to_db:', error);
-    }
-}
-
-/**
- * Asynchronously generates the final response based on all relevant articles and user query input.
- *
- * @param {Array} allRelevantArticles - The list of relevant articles to generate the response.
- * @param {string} user_query - The user query input for generating the response.
- * @return {Promise<Object>} A Promise that resolves to the final response generated.
- */
-async function generateFinalResponse(allRelevantArticles, user_query) {
-    try {
-        const response = await fetch(`${baseURL}/generate_final_response/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                all_relevant_articles: allRelevantArticles,
-                user_query: user_query
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        console.log('Generate Final Response:', result);
-        return result;
-    } catch (err) {
-        console.error('Fetch error:', err);
-        throw err;
-    }
-}
-
-/**
  * Retrieves an answer from the server based on the provided question.
  *
  * @param {string} question - The question to be asked.
@@ -608,36 +411,58 @@ const generatePDF = () => {
  */
 async function runGeneration(userQuery) {
     const answerElement = document.getElementById('output');
-    console.log("Running Generation");
-    const queryInfo = await queryGeneration(userQuery);
-    const queryList = queryInfo["query_list"];
+    answerElement.innerText = 'Connecting...\n';
 
-    answerElement.innerText += "Generated search phrases...\n";
+    return new Promise(async (resolve, reject) => {
+        try {
+            // First, send the query and get the session_id
+            const response = await fetch(`${baseURL}/process_query`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_query: userQuery }),
+            });
+            const data = await response.json();
+            const sessionId = data.session_id;
 
-    const deduplicatedArticlesCollectedInfo = await collectArticles(queryList);
-    const deduplicatedArticlesCollected = deduplicatedArticlesCollectedInfo["deduplicated_articles_collected"];
-    const articleInfo = await articleMatching(deduplicatedArticlesCollected);
-    const matchedArticles = articleInfo["matched_articles"];
+            answerElement.innerText += `Got session_id: ${sessionId}\n`;
+            console.log("Got session_id:", sessionId);
+            
+            // Now, connect to the SSE endpoint with the session_id
+            const eventSource = new EventSource(`${baseURL}/sse?session_id=${sessionId}`);
 
-    answerElement.innerText += "Matched " + matchedArticles.length + " articles already in our database...\n";
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('Received data:', data);
 
-    const articlesToProcess = articleInfo["articles_to_process"];
+                if (data.update) {
+                    
+                    // Check if this is the final update
+                    if (data.update.end_output) {
+                        console.log("Received final update. Closing EventSource.");
+                        eventSource.close();
+                        resolve(); // Resolve the promise when we get the final output
+                    } else {
+                        answerElement.innerText += `${data.update}\n`;
+                    }
 
-    answerElement.innerText += "Processing " + articlesToProcess.length + " articles...\n";
+                }
+            };
 
-    const reliabilityInfo = await reliabilityAnalysisProcessing(articlesToProcess, userQuery);
-    const relevantArticleSummaries = reliabilityInfo["relevant_article_summaries"];
+            eventSource.onerror = (error) => {
+                console.error('EventSource failed:', error);
+                answerElement.innerText += 'Error: EventSource failed\n';
+                eventSource.close();
+                reject(error); // Reject the promise on error
+            };
 
-    await writeArticlesToDb(relevantArticleSummaries);
-
-    const allArticleInfo = await getAllArticles(relevantArticleSummaries, matchedArticles);
-    const allRelevantArticles = allArticleInfo["all_relevant_articles"];
-
-    answerElement.innerText += "Synthesizing articles to build an answer for your question...\n";
-
-    const finalOutputInfo = await generateFinalResponse(allRelevantArticles, userQuery);
-    const finalOutput = finalOutputInfo["final_output"];
-    const response_obj = finalOutputInfo["response_obj"];
+        } catch (error) {
+            console.error('Error:', error);
+            answerElement.innerText += `Error: ${error.message}\n`;
+            reject(error); // Reject the promise on error
+        }
+    });
 }
 
 
