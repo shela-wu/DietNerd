@@ -2,6 +2,8 @@
 
 ![DietNerd Logo](assets/dietnerd_logo.png)
 
+dietnerd.org
+
 DietNerd is a web application dedicated to providing evidence-based answers to dietary questions. Our mission is to enrich conversations with registered dietitians and empower users with knowledge to make informed dietary decisions.
 
 ## Features
