@@ -15,8 +15,7 @@ DietNerd is a web application dedicated to providing evidence-based answers to d
 ## Technology Stack
 
 - Frontend: HTML, CSS, JavaScript
-- Backend API: Not included in this repository
-
+- Backend API: Not included in this repository, see https://github.com/zyacub/dietnerd-backend
 ## Project Structure
 
 - `index.html`: Main page of the application
