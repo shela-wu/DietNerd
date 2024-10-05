@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - DietNerd</title>
+    <link rel="stylesheet" type="text/css" href="contact.css">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel="stylesheet">
+    <style>
+        .toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .toolbar a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
+    <div id="ownership">
+        <p>Professor Dennis Shasha @ New York University</p>
+        <p>Shela Wu @ New York University</p>
+        <p>Zubair Yacub @ University of Illinois Urbana Champaign</p>
+    </div>
+    <div id="container">
+        <img src="assets/dietnerd_logo.png" alt="DietNerd Logo" class="logo">
+        
+        <h1>Contact Us</h1>
+        <p>Please tell us what you liked and didn't like!</p>
+        
+        <form id="contactForm">
+            <div class="input-container">
+                <label for="name" class="visually-hidden">Name</label>
+                <input type="text" id="name" name="user_name" placeholder="Your Name" required>
+            </div>
+            <div class="input-container">
+                <label for="email" class="visually-hidden">Email</label>
+                <input type="email" id="email" name="user_email" placeholder="Your Email" required>
+            </div>
+            <div class="input-container">
+                <label for="feedback" class="visually-hidden">Feedback</label>
+                <textarea id="feedback" name="message" placeholder="Your Feedback" rows="4" required></textarea>
+            </div>
+            <button type="submit" id="submit">Submit</button>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="env.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init({
+              publicKey: window.env.EMAILJS_PUBLIC_KEY,
+            });
+        })();
+    </script>
+    <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById('contactForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                emailjs.sendForm(window.env.EMAILJS_SERVICE_ID, window.env.EMAILJS_TEMPLATE_ID, this)
+                    .then(() => {
+                        alert("Thank you for your feedback!");
+                        document.getElementById("contactForm").reset();
+                        console.log('SUCCESS!');
+                    }, (error) => {
+                        console.log('FAILED...', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
