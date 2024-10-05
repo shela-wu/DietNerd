@@ -17,7 +17,7 @@ The tool is designed to provide reliable and up-to-date information for individu
 ## Technology Stack
 
 - Frontend: HTML, CSS, JavaScript
-- Backend API: Not included in this repository, see https://github.com/zyacub/dietnerd-backend
+- Backend API
 ## Project Structure
 
 - `index.html`: Main page of the application
