@@ -1,6 +1,6 @@
 # DietNerd
 
-![DietNerd Logo](assets/dietnerd_logo.png)
+![DietNerd Logo](dietnerd-website/assets/dietnerd_logo.png)
 
 dietnerd.org
 
