@@ -241,7 +241,21 @@ def query_generation(query):
 
 """## Step3. Information Retrieval"""
 
-#@title article_retrieval
+def exponential_backoff(func, *args, **kwargs):
+        retries = 5
+        wait = 1 
+
+        for i in range(retries):
+            try:
+                result = func(*args, **kwargs)
+                if result:
+                    return result
+            except Exception as e:
+                print(f"Attempt {i+1} failed: {str(e)}")
+                time.sleep(wait)
+                wait *= 2 ** i + (random.uniform(0, 1) * 0.1) 
+        return None
+
 #@title article_retrieval
 def article_retrieval(query):
   """
@@ -256,15 +270,18 @@ def article_retrieval(query):
   """
   Entrez.email = os.getenv('ENTREZ_EMAIL')
 
-  search_results = esearch(db="pubmed", term=query, retmax=10, sort="relevance")
+  search_results = exponential_backoff(Entrez.esearch, db="pubmed", term=query, retmax=10, sort="relevance")
+  # search_results = esearch(db="pubmed", term=query, retmax=10, sort="relevance")
   retrieved_ids = Entrez.read(search_results)["IdList"]
 
   if not retrieved_ids:
       return []
 
-  articles = efetch(db="pubmed", id=retrieved_ids, rettype="xml")
+  articles = exponential_backoff(Entrez.efetch, db="pubmed", id=retrieved_ids, rettype="xml")
+  # articles = efetch(db="pubmed", id=retrieved_ids, rettype="xml")
   article_data = Entrez.read(articles)["PubmedArticle"]
   return article_data
+
 
 #@title collect_articles
 def collect_articles(query_list):
