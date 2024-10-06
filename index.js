@@ -206,8 +206,31 @@ const formatReferences = (output) => {
  * @return {Array} An array of references.
  */
 const extractReferences = (output) => {
-    // Split the output at "References:" and take the second part
-    const referencePart = output.split("References:")[1];
+    const referenceMarkers = [
+        "References:", 
+        "References", 
+        "Reference:", 
+        "### References", 
+        "### References:", 
+        "#### References", 
+        "#### References:", 
+        "**References:**", 
+        "**References**:", 
+        "**References**", 
+        "Reference"
+      ];
+      
+      // Initialize referencePart as undefined
+      let referencePart = undefined;
+      
+      // Loop through each marker and try to find a match
+      for (const marker of referenceMarkers) {
+        if (output.includes(marker)) {
+          // Split using the first matching marker and break the loop
+          referencePart = output.split(marker)[1];
+          break;
+        }
+      }
     
     if (!referencePart) return [];
   
@@ -504,7 +527,7 @@ document.getElementById('submit').addEventListener('click', async (event) => {
         } catch (error) {
             console.log(error)
             console.log('Not in database, retrieving similiar queries...');
-            hintElement.textContent = `Generating your answer may take up to 2 minutes. For an instant response, choose from the similar questions below.. If you'd prefer to proceed with generating your answer, click "Generate My Original Question"`
+            hintElement.textContent = `Generating your answer may a minute or so. For an instant response, choose from the similar questions below. If you'd prefer to proceed with generating your answer, click "Generate My Original Question"`
             similarQuestionsContainer.style.display = 'flex'
             const similar_q = await get_sim(question);
             similarQuestionsContainer.innerHTML = '';
@@ -521,7 +544,7 @@ document.getElementById('submit').addEventListener('click', async (event) => {
 
             const currentQuestionButton = document.createElement('button');
             if (similar_q.length == 0) {
-                currentQuestionButton.textContent = 'We have no answers for questions that are similiar to the one you pose. It will take about 2 minutes to generate an answer. If you like us to do that, please click this button.';
+                currentQuestionButton.textContent = 'We did not find any similar questions. To generate an answer, please click this button. This may take a minute.';
             } else {
                 currentQuestionButton.textContent = 'Generate an answer to my original question. This may take a minute.';
 

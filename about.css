@@ -5,24 +5,46 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e3f2fd; /* Light blue background */
-    position: relative; /* To position ownership text */
     min-height: 100vh;
+    background-color: #f0f8ff; /* Light blue background */
     flex-direction: column;
+    /* position: relative; */
 }
 
-#ownership {
+/*#ownership {
     position: absolute;
     top: 10px;
     left: 10px;
     font-size: 14px;
     color: #555;
-    text-align: left; /* Ensure text is left-aligned */
-}
+    text-align: left;} 
 
-#ownership p {
+ #ownership p {
     margin: 0;
     padding: 0;
+} */
+
+.toolbar {
+    display: flex; /* Aligns links in a row */
+    padding: 10px 0; /* Vertical padding */
+    justify-content: center; /* Centers links horizontally */
+}
+
+.toolbar a {
+    color: #333; /* Dark text color for readability */
+    background-color: #ffffff; /* Light background for each link/button */
+    text-decoration: none; /* Removes underline from links */
+    padding: 10px 20px; /* Padding around the text */
+    margin: 0 5px; /* Space between buttons */
+    border: 1px solid #ccc; /* Subtle border for definition */
+    border-radius: 5px; /* Rounded corners for a modern look */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+.toolbar a:hover, .toolbar a:focus {
+    background-color: #0056b3; /* Change background on hover/focus */
+    color: #ffffff; /* Light text color on hover/focus */
+    outline: none; /* Removes the outline on focus for cleaner look */
 }
 
 #container {
@@ -32,16 +54,18 @@ body {
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px 20px;
-    margin: 20px;
+    padding: 10px 20px;
+    margin: 10px 20px 20px; 
 }
 
 .logo {
-    width: 150px;
+    width: 300px;
     height: auto;
     margin: 0 auto -70px; /* Center the logo horizontally and add margin-bottom */
     display: block;
 }
+
+
 
 h1 {
     font-size: 2.5em;

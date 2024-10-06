@@ -3,7 +3,13 @@
 /* Set background color to match the main page */
 body {
     background-color: #f0f8ff;
-    font-family: 'Open Sans', sans-serif; /* Match the background color of the main page */
+    font-family: 'Open Sans', sans-serif;
+    /* margin: 10; */
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120vh;
 }
 
 /* Additional styles for the reference page */
@@ -14,15 +20,26 @@ h1 {
 }
 
 .toolbar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    display: flex; /* Aligns links in a row */
+    padding: 10px 0; /* Vertical padding */
+    justify-content: center; /* Centers links horizontally */
 }
+
 .toolbar a {
-    margin-left: 15px;
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
+    color: #333; /* Dark text color for readability */
+    background-color: #ffffff; /* Light background for each link/button */
+    text-decoration: none; /* Removes underline from links */
+    padding: 10px 20px; /* Padding around the text */
+    margin: 0 5px; /* Space between buttons */
+    border: 1px solid #ccc; /* Subtle border for definition */
+    border-radius: 5px; /* Rounded corners for a modern look */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+.toolbar a:hover, .toolbar a:focus {
+    background-color: #0056b3; /* Change background on hover/focus */
+    color: #ffffff; /* Light text color on hover/focus */
+    outline: none; /* Removes the outline on focus for cleaner look */
 }
 
 #reference-content {
@@ -37,7 +54,7 @@ h1 {
     background-color: #fff;
     overflow-y: auto;
     font: 'Open Sans';
-    max-height: 400px;
+    max-height: 450px;
 }
 
 .header {
