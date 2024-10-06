@@ -7,22 +7,22 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #f0f8ff; /* Light blue background */
-    position: relative; /* To position ownership text */
+    /*position: relative;*/ /* To position ownership text */
 }
 
-#ownership {
+/* #ownership {
     position: absolute;
     top: 10px;
     left: 10px;
     font-size: 14px;
     color: #555;
-    text-align: left; /* Ensure text is left-aligned */
+    text-align: left; 
 }
 
 #ownership p {
     margin: 0;
     padding: 0;
-}
+} */
 
 #container {
     width: 100%;
@@ -39,6 +39,29 @@ body {
     display: block;
 }
 
+.toolbar {
+    display: flex; /* Aligns links in a row */
+    padding: 10px 0; /* Vertical padding */
+    justify-content: center; /* Centers links horizontally */
+}
+
+.toolbar a {
+    color: #333; /* Dark text color for readability */
+    background-color: #ffffff; /* Light background for each link/button */
+    text-decoration: none; /* Removes underline from links */
+    padding: 10px 20px; /* Padding around the text */
+    margin: 0 5px; /* Space between buttons */
+    border: 1px solid #ccc; /* Subtle border for definition */
+    border-radius: 5px; /* Rounded corners for a modern look */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+.toolbar a:hover, .toolbar a:focus {
+    background-color: #0056b3; /* Change background on hover/focus */
+    color: #ffffff; /* Light text color on hover/focus */
+    outline: none; /* Removes the outline on focus for cleaner look */
+}
+
 textarea, input[type="text"] {
     width: 100%;
     align-items: center;
@@ -50,6 +73,7 @@ textarea, input[type="text"] {
     font-size: 16px;
 }
 
+
 #question {
     height: 40px;
 }
@@ -57,12 +81,14 @@ textarea, input[type="text"] {
 .input-container {
     position: relative;
     display: flex; /* Use flexbox to align items */
+    margin-left: 13px;
 }
 
 #submit {
     width: auto; /* Adjust width automatically to fit content */
     height: 70px;
     padding: 0px 20px; /* Adjust padding for button size */
+    margin-right: 13px;
     background-color: #007bff; /* Blue color */
     color: #fff; /* White text color */
     border: none;
@@ -110,8 +136,7 @@ h2 {
 .disclaimer {
     color: rgba(30, 31, 32, 0.644); /* red */
     font-size: 0.9em; /* slightly smaller font size */
-    margin-top: 15px;
-    margin-bottom: 20px;
+    margin: 15px 50px 20px 50px;
 }
 
 .hint {
@@ -130,31 +155,26 @@ h2 {
     margin-top: 30px;
 }
 
-#output {
-    flex: 1.5;
+#output, #references {
     overflow-y: auto;
-    padding: 15px;
+    padding: 15px; /* Same padding for both */
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #fff;
-    height: 380px;
-    font: 'Open Sans';
+    height: 380px; /* Same height for both */
+    font: 'Open Sans', sans-serif; /* Corrected font declaration */
     text-align: left;
     margin-bottom: 13px;
+    box-sizing: border-box; /* Include padding and border in the height calculation */
+}
+
+#output {
+    flex: 1.5; /* Larger flex-grow to take up more space */
     margin-left: 13px;
 }
 
 #references {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    height: 380px;
-    font: 'Open Sans';
-    text-align: left;
-    margin-bottom: 13px;
+    flex: 1; /* Smaller flex-grow */
     margin-left: 1px;
     margin-right: 13px;
 }
@@ -162,7 +182,7 @@ h2 {
 #output textarea,
 #references textarea {
     width: 100%;
-    height: 100%;
+    height: 100%; /* Fill the container */
     border: none;
     resize: none;
     font-size: 16px;

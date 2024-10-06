@@ -6,10 +6,11 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    position: relative;
+    background-color: #f0f8ff; /* Light blue background */
+    /* background: linear-gradient(135deg, #e3f2fd, #bbdefb); */
+    /* position: relative; */
 }
-
+/* 
 #ownership {
     position: absolute;
     top: 10px;
@@ -22,28 +23,53 @@ body {
 #ownership p {
     margin: 0;
     padding: 0;
-}
+} */
 
 #container {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    padding: 40px 20px;
+    padding: 0px 20px;
     margin: 20px;
 }
 
 .logo {
-    width: 150px;
+    width: 300px;
     height: auto;
-    margin: 0 auto 30px;
+    margin: 0 auto 0px !important;
     display: block;
+}
+
+.toolbar {
+    display: flex; /* Aligns links in a row */
+    padding: 10px 0; /* Vertical padding */
+    justify-content: center; /* Centers links horizontally */
+}
+
+.toolbar a {
+    color: #333; /* Dark text color for readability */
+    background-color: #ffffff; /* Light background for each link/button */
+    text-decoration: none; /* Removes underline from links */
+    padding: 10px 20px; /* Padding around the text */
+    margin: 0 5px; /* Space between buttons */
+    border: 1px solid #ccc; /* Subtle border for definition */
+    border-radius: 5px; /* Rounded corners for a modern look */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+.toolbar a:hover, .toolbar a:focus {
+    background-color: #0056b3; /* Change background on hover/focus */
+    color: #ffffff; /* Light text color on hover/focus */
+    outline: none; /* Removes the outline on focus for cleaner look */
 }
 
 h1 {
     font-size: 2.8em;
     color: #2c3e50;
-    margin-bottom: 20px;
+    margin-top: 0 !important;
+    margin-bottom: 10px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    line-height: 1.2;
 }
 
 p {
