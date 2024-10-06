@@ -1,18 +1,10 @@
 # DietNerd
 
-<<<<<<< HEAD
 ![DietNerd Logo](dietnerd-website/assets/dietnerd_logo.png)
 
 DietNerd (https://dietnerd.org/) is a web-based LLM-powered tool that answers diet and nutrition-related questions by extracting and summarizing information from academic papers sourced from PubMed. Users can ask questions on various topics, including dietary strategies, nutrition science, and health outcomes, and receive detailed, evidence-based responses based on the latest research. It utilizes a unique article search strategy and is built with multiple safety-motivated touchpoints, including a safety analysis that evaluates the pros, cons, and risks of the topics in question.
 
 The tool is designed to provide reliable and up-to-date information for individuals, health professionals, and researchers alike. Our mission is to enrich conversations between patients and their medical providers and equip users with knowledge.
-=======
-![DietNerd Logo](assets/dietnerd_logo.png)
-
-dietnerd.org
-
-DietNerd is a web application dedicated to providing evidence-based answers to dietary questions. Our mission is to enrich conversations with registered dietitians and empower users with knowledge to make informed dietary decisions.
->>>>>>> master
 
 ## Features
 
@@ -25,11 +17,7 @@ DietNerd is a web application dedicated to providing evidence-based answers to d
 ## Technology Stack
 
 - Frontend: HTML, CSS, JavaScript
-<<<<<<< HEAD
 - Backend API
-=======
-- Backend API: Not included in this repository, see https://github.com/zyacub/dietnerd-backend
->>>>>>> master
 ## Project Structure
 
 - `index.html`: Main page of the application
